@@ -11,10 +11,7 @@ router.post("/signup", async (req, res) => {
   console.log(req.body);
   const { type, name, email, password, teacherId, srn } = req.body;
   let user;
-
-  // Hash the password
-  // const hashedPassword = await bcrypt.hash(password, 10);
-  const hashedPassword = password;
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   if (type == 'teacher') {
     user = new Teacher({
@@ -64,8 +61,7 @@ router.post("/login", async (req, res) => {
       console.log("Student exists");
       console.log(password);
       console.log(getStudent.password);
-      // const result = await bcrypt.compare(password, getStudent.password);
-      const result = password === getStudent.password;
+      const result = await bcrypt.compare(password, getStudent.password);
       if (result) {
         // const token = jwt.sign({ userId: getStudent._id }, "my-secret-key");
         console.log({
@@ -89,8 +85,7 @@ router.post("/login", async (req, res) => {
       console.log("Teacher exists");
       console.log(password);
       console.log(getTeacher.password);
-      // const result = await bcrypt.compare(password, getTeacher.password);
-      const result = password === getTeacher.password;
+      const result = await bcrypt.compare(password, getTeacher.password);
       if (result) {
         // const token = jwt.sign({ userId: getTeacher._id }, "my-secret-key");
         console.log({
