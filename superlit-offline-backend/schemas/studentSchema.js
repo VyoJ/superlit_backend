@@ -7,6 +7,6 @@ let studentSchema = new Schema({
   password: { type: String, required: true },
   classes_joined: { type: Array },
   tests: { type: Array },
-});
+}); 
 
 module.exports = mongoose.model("Student", studentSchema);

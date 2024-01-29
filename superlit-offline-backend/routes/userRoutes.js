@@ -6,13 +6,38 @@ const Teacher = require("../schemas/teacherSchema");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
+
 router.post("/signup", async (req, res) => {
-  req.body.password = await bcrypt.hash(req.body.password, 10);
-  let user = new Student({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-  });
+  console.log(req.body);
+  const { type, name, email, password, teacherId, srn } = req.body;
+  let user;
+
+  // Hash the password
+  // const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = password;
+
+  if (type == 'teacher') {
+    user = new Teacher({
+      name,
+      teacherId,
+      email,
+      password: hashedPassword,
+      classes_created: [],
+      tests: [],
+    });
+  } else if (type === 'student') {
+    user = new Student({
+      name,
+      srn,
+      password: hashedPassword,
+      classes_joined: [],
+      tests: [],
+    });
+  } else {
+    console.log(req.body);
+    return res.status(400).send("Invalid user type");
+  }
+
   try {
     let savedUser = await user.save();
     const token = jwt.sign({ userId: savedUser._id }, "my-secret-key");

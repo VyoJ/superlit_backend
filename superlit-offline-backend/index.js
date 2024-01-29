@@ -1,14 +1,13 @@
-const e = require("child_process");
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-const demoRoutes = require("./demoRoutes");
+const demoRoutes = require("./routes/demoRoutes");
 const userRoutes = require("./routes/userRoutes");
 const PORT = 6969;
 
 app.use(express.json());
-express.json();
 app.use(
     cors({
         origin: ["http://localhost:3000"],
