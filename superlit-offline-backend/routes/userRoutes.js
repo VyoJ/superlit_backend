@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
       console.log(getStudent.password);
       const result = await bcrypt.compare(password, getStudent.password);
       if (result) {
-        // const token = jwt.sign({ userId: getStudent._id }, "my-secret-key");
+        const token = jwt.sign({ userId: getStudent._id }, "my-secret-key");
         console.log({
           // token,
           srn: getStudent.srn,
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
       console.log(getTeacher.password);
       const result = await bcrypt.compare(password, getTeacher.password);
       if (result) {
-        // const token = jwt.sign({ userId: getTeacher._id }, "my-secret-key");
+        const token = jwt.sign({ userId: getTeacher._id }, "my-secret-key");
         console.log({
           // token,
           teacherId: getTeacher._id,

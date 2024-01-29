@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 function fileNamer(srn) {
   let fileName = "code" + srn + ".c";
   let outputFile = "code" + srn;
-  return { fileName, outputFile };
+  return [ fileName, outputFile ];
 }
 
 function getScore(code, test_cases, srn) {
@@ -46,16 +46,18 @@ function getScore(code, test_cases, srn) {
 
 router.post("/run", async (req, res) => {
   let fileNames = fileNamer(req.body.srn);
+  console.log(fileNames[0], fileNames[1]);
   try {
     console.log("request received");
+    console.log(req.body);
 
-    fs.writeFile(fileNames[0], req.body["code"], (err) => {
-      if (err) {
-        console.log("error writing to file");
-      }
-    });
-
-    let fileNames = fileNamer();
+    try {
+      fs.writeFileSync(`${fileNames[0]}`, req.body["code"]);
+      console.log("success");
+    } catch (err) {
+      console.log("error writing to file", err);
+    }
+    
     exec(
       `echo ${req.body["input"]} | ./compile_c.sh ${fileNames[0]} ${fileNames[1]}`,
       function (error, stdout, stderr) {
@@ -72,18 +74,18 @@ router.post("/submit", async (req, res) => {
   let fileNames = fileNamer(req.body.srn);
   try {
     try {
-      fs.writeFileSync(fileNames[0], req.body["code"]);
+      fs.writeFileSync(`${fileNames[0]}`, req.body["code"]);
     } catch (err) {
       console.log("error writing to code.c");
     }
 
-    const command = `./only_compile.sh code.c`;
+    const command = `./only_compile.sh ${fileNames[0  ]}`;
     execSync(command);
 
     async function run_testcase(testcase) {
       return new Promise((resolve, reject) => {
         exec(
-          `echo ${testcase["input"]} | ./run_testcase.sh code.c`,
+          `echo ${testcase["input"]} | ./run_testcase.sh ${fileNames[1]}`,
           function (error, stdout, stderr) {
             if (stdout != testcase["expected_output"]) {
               const result = {
