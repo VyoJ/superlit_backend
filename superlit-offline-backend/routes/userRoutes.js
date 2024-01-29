@@ -52,7 +52,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.post("login", async (req, res) => {
+router.post("/login", async (req, res) => {
   const srn = req.body["srn"];
   const password = req.body["password"];
   let studentRegex = new RegExp("PES[12]UG2.*");
@@ -64,13 +64,14 @@ router.post("login", async (req, res) => {
       console.log("Student exists");
       console.log(password);
       console.log(getStudent.password);
-      const result = await bcrypt.compare(password, getStudent.password);
+      // const result = await bcrypt.compare(password, getStudent.password);
+      const result = password === getStudent.password;
       if (result) {
         // const token = jwt.sign({ userId: getStudent._id }, "my-secret-key");
         console.log({
-          token,
-          srn: getStudent._id,
-          email: getStudent.email,
+          // token,
+          srn: getStudent.srn,
+          // email: getStudent.email,
           name: getStudent.name,
         });
         res.send({ success: true });
@@ -88,11 +89,12 @@ router.post("login", async (req, res) => {
       console.log("Teacher exists");
       console.log(password);
       console.log(getTeacher.password);
-      const result = await bcrypt.compare(password, getTeacher.password);
+      // const result = await bcrypt.compare(password, getTeacher.password);
+      const result = password === getTeacher.password;
       if (result) {
         // const token = jwt.sign({ userId: getTeacher._id }, "my-secret-key");
         console.log({
-          token,
+          // token,
           teacherId: getTeacher._id,
           email: getTeacher.email,
           name: getTeacher.name,
