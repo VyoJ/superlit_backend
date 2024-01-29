@@ -1,0 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[]){
+  int x;
+  printf("Hello Superlit!\n");
+  scanf("%d", &x);
+  printf("%d", x);
+  return EXIT_SUCCESS;
+}

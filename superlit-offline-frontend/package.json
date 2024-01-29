@@ -1,0 +1,30 @@
+{
+  "name": "superlit",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@monaco-editor/react": "^4.6.0",
+    "@next/font": "^13.4.4",
+    "@supabase/supabase-js": "^2.39.2",
+    "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
+    "bufferutil": "^4.0.8",
+    "eslint": "8.41.0",
+    "eslint-config-next": "13.4.3",
+    "monaco-editor": "^0.45.0",
+    "monaco-vim": "^0.4.1",
+    "next": "13.4.3",
+    "postcss": "8.4.23",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwind-scrollbar-hide": "^1.1.7",
+    "tailwindcss": "3.3.2"
+  }
+}
