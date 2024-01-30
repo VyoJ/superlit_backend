@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const demoRoutes = require("./routes/demoRoutes");
 const userRoutes = require("./routes/userRoutes");
+const testRoutes = require("./routes/testRoutes");
 const PORT = 6969;
 
 app.use(express.json());
@@ -27,6 +28,7 @@ const connectToDb = async() => {
 connectToDb();
 
 app.use(bodyParser.json());
+app.use("/", demoRoutes);
 app.use("/", demoRoutes);
 app.use("/auth", userRoutes);
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

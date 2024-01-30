@@ -127,15 +127,6 @@ router.post("/submit", async (req, res) => {
   }
 });
 
-router.get("/get_test_data/:test_id", async (req, res, next) => {
-  // fetch test data from db
-  const test_collection = db.collection("tests");
-  const test_data = await test_collection.findOne({
-    _id: Number(req.params.test_id),
-  });
-  res.send(test_data);
-});
-
 router.post("/end_test", async (req, res, next) => {
   const test_id = req.body["test_id"];
   const srn = req.body["srn"];

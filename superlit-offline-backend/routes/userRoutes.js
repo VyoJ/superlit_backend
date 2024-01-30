@@ -6,7 +6,6 @@ const Teacher = require("../schemas/teacherSchema");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
-
 router.post("/signup", async (req, res) => {
   console.log(req.body);
   const { type, name, email, password, teacherId, srn } = req.body;
