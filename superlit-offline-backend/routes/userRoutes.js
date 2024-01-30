@@ -6,13 +6,16 @@ const Teacher = require("../schemas/teacherSchema");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
+let studentRegex = new RegExp("PES[12]UG2.*");
+let teacherRegex = new RegExp("EMP*");
+
 router.post("/signup", async (req, res) => {
   console.log(req.body);
   const { type, name, email, password, teacherId, srn } = req.body;
   let user;
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  if (type == 'teacher') {
+  if (type == "teacher") {
     user = new Teacher({
       name,
       teacherId,
@@ -21,7 +24,7 @@ router.post("/signup", async (req, res) => {
       classes_created: [],
       tests: [],
     });
-  } else if (type === 'student') {
+  } else if (type === "student") {
     user = new Student({
       name,
       srn,
@@ -36,13 +39,8 @@ router.post("/signup", async (req, res) => {
 
   try {
     let savedUser = await user.save();
-    const token = jwt.sign({ userId: savedUser._id }, "my-secret-key");
-    res.status(200).send({
-      token,
-      userId: savedUser._id,
-      email: savedUser.email,
-      name: savedUser.name,
-    });
+    console.log("Registered:", savedUser);
+    res.status(200).send({ success: true });
   } catch (error) {
     return res.status(401).send("Invalid email or password");
   }
@@ -51,8 +49,6 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   const srn = req.body["srn"];
   const password = req.body["password"];
-  let studentRegex = new RegExp("PES[12]UG2.*");
-  let teacherRegex = new RegExp("EMP*");
 
   if (studentRegex.test(srn)) {
     const getStudent = await Student.findOne({ srn: srn });
@@ -62,11 +58,8 @@ router.post("/login", async (req, res) => {
       console.log(getStudent.password);
       const result = await bcrypt.compare(password, getStudent.password);
       if (result) {
-        const token = jwt.sign({ userId: getStudent._id }, "my-secret-key");
         console.log({
-          // token,
           srn: getStudent.srn,
-          // email: getStudent.email,
           name: getStudent.name,
         });
         res.send({ success: true });
@@ -86,9 +79,7 @@ router.post("/login", async (req, res) => {
       console.log(getTeacher.password);
       const result = await bcrypt.compare(password, getTeacher.password);
       if (result) {
-        const token = jwt.sign({ userId: getTeacher._id }, "my-secret-key");
         console.log({
-          // token,
           teacherId: getTeacher._id,
           email: getTeacher.email,
           name: getTeacher.name,
@@ -109,9 +100,24 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("forgot_password", async (req, res) => {
-  const srn = req.body["srn"];
+  const id = req.body["srn"];
+  let user;
+
+  if (studentRegex.test(id)) {
+    try {
+      user = await Student.findOne({ srn: id });
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  } else if (teacherRegex.test(id)) {
+    try {
+      user = await Teacher.findOne({ teacherId: id });
+    } catch (err) {
+      res.sendStatus(500);
+    }
+  }
+
   try {
-    const user = await col.findOne({ srn: srn });
     if (user) {
       const secret = JWT_SECRET + user["password"];
       const payload = {
@@ -157,26 +163,55 @@ router.post("forgot_password", async (req, res) => {
   }
 });
 
-router.post("reset_password/:id/:token", async (req, res, next) => {
+router.post("reset_password/:id/:token", async (req, res) => {
   let { id, token } = req.params;
   console.log(id, token);
 
-  const user = await col.findOne({ _id: new ObjectId(id) });
-  if (!user) {
-    res.sendStatus(404);
-  } else {
-    const secret = JWT_SECRET + user["password"];
+  if (studentRegex.test(id)) {
     try {
-      jwt.verify(token, secret);
-      const new_password = req.body["new_password"];
-      await col.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { password: new_password } }
-      );
-      res.sendStatus(200);
+      const user = await Student.findOne({ _id: new ObjectId(id) });
+      if (!user) {
+        res.sendStatus(404);
+      } else {
+        const secret = JWT_SECRET + user["password"];
+        try {
+          jwt.verify(token, secret);
+          const new_password = req.body["new_password"];
+          await Student.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { password: new_password } }
+          );
+          res.sendStatus(200);
+        } catch (err) {
+          console.log(err);
+          res.sendStatus(401);
+        }
+      }
     } catch (err) {
-      console.log(err);
-      res.sendStatus(401);
+      res.sendStatus(500);
+    }
+  } else if (teacherRegex.test(id)) {
+    try {
+      const user = await Teacher.findOne({ _id: new ObjectId(id) });
+      if (!user) {
+        res.sendStatus(404);
+      } else {
+        const secret = JWT_SECRET + user["password"];
+        try {
+          jwt.verify(token, secret);
+          const new_password = req.body["new_password"];
+          await Teacher.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { password: new_password } }
+          );
+          res.sendStatus(200);
+        } catch (err) {
+          console.log(err);
+          res.sendStatus(401);
+        }
+      }
+    } catch (err) {
+      res.sendStatus(500);
     }
   }
 });
