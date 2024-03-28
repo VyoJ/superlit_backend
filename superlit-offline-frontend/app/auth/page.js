@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useAuth } from "@/components/AuthContext";
-
+import Link from "next/link";
 export default function Page({ children }) {
   const srnRef = useRef(null);
   const passwordRef = useRef(null);
@@ -16,6 +16,7 @@ export default function Page({ children }) {
     }
     try {
       // sends post request to /api/login with srn and password
+      // TODO: ADD SIGNUP : WORKING ON IT
       const res = await fetch("/api/backendi/auth/login", {
         method: "POST",
         headers: {
@@ -105,6 +106,12 @@ export default function Page({ children }) {
           >
             Login
           </button>
+          <Link
+            href="/auth/register"
+            className="text-blue-200 hover:text-blue-300 cursor-pointer"
+          >
+            New? Register
+          </Link>
         </div>
       </div>
     </div>
