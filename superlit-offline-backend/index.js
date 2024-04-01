@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const demoRoutes = require("./routes/demoRoutes");
 const userRoutes = require("./routes/userRoutes");
 const testRoutes = require("./routes/testRoutes");
+const classRoutes = require("./routes/classRoutes");
 const PORT = 6969;
 
 app.use(express.json());
@@ -30,4 +31,5 @@ app.use(bodyParser.json());
 app.use("/", demoRoutes);
 app.use("/auth", userRoutes);
 app.use("/test", testRoutes);
+app.use("/class", classRoutes);
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
