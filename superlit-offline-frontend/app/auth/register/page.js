@@ -19,7 +19,7 @@ export default function Register({ children }) {
       !passwordRef.current.value ||
       !passwordRef.current.value
     ) {
-      alert("Please enter both SRN, password and repeat password");
+      alert("Please enter ID, password and repeat password");
       return;
     }
     try {
@@ -44,17 +44,18 @@ export default function Register({ children }) {
       console.log(data);
       if (data.success) {
         // if success is true, redirect to /test/0 (test with ID 0) (temporarily, would be /dashboard later)
-        login(IdRef.current.value);
-        router.push("/test/0");
+        // login(IdRef.current.value);
+        // router.push("/test/0");
+        router.push("/auth");
       } else {
         // else something went wrong in register
         alert("Something screwed up. Check the browser console");
         console.log(res.statusText);
       }
     } catch (err) {
-      console.log(res.statusText);
+      // console.log(res.statusText);
       alert(
-        "Something went wrong in registering. Please contact the sys admin. The error is logged to the console.",
+        "Something went wrong in registering. Please contact the sys admin. The error is logged to the console."
       );
       console.log(err);
     }
@@ -77,9 +78,6 @@ export default function Register({ children }) {
             ref={nameRef}
             type="text"
             placeholder="Name"
-            onInput={(e) => {
-              e.target.value = e.target.value.toUpperCase();
-            }}
             className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3"
           ></input>
           <label className="text-white">
@@ -98,9 +96,6 @@ export default function Register({ children }) {
             ref={emailRef}
             type="text"
             placeholder="Email"
-            onInput={(e) => {
-              e.target.value = e.target.value.toUpperCase();
-            }}
             className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3"
           ></input>
           <input

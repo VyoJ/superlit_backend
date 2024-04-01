@@ -22,11 +22,10 @@ export default function Test({ params }) {
 
   const router = useRouter();
   let { user, login, logout } = useAuth();
-  user = "ungabunga"
   const [loading, setLoading] = useState(true);
   // stuff that should run only once on page load
   useEffect(() => {
-    // if (!user) router.replace("/auth");
+    if (!user) router.replace("/auth");
     const monaco = dynamic(
       import("monaco-editor").then((monaco) => {
         console.log("monaco loaded");
@@ -164,6 +163,10 @@ export default function Test({ params }) {
   }
 
   async function end_button_clicked() {
+
+    let confirmation = confirm("Are you sure you want to end the test?");
+    if(!confirmation) return;
+
     let post_request_data = {
       test_id: test_id,
       srn: user,

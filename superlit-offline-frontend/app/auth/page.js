@@ -32,17 +32,20 @@ export default function Page({ children }) {
       // get the json data
       const data = await res.json();
       console.log(data);
-      if (data.success) {
+      if (data.length) {
         // if success is true, redirect to /test/0 (test with ID 0) (temporarily, would be /dashboard later)
-        login(srnRef.current.value);
-        router.push("/test/0");
+        login(data);
+        if (data[0] === "teacher") {
+          router.push("/teacherDash");
+        } else if (data[0] === "student") {
+          router.push("/studentDash");
+        }
       } else {
-        // else, show alert
         alert("Make sure your password is right");
       }
     } catch (err) {
       alert(
-        "Something went wrong in logging in. Please contact the sys admin. The error is logged to the console.",
+        "Something went wrong in logging in. Please contact the sys admin. The error is logged to the console."
       );
       console.log(err);
     }
@@ -65,11 +68,11 @@ export default function Page({ children }) {
       });
       if (!response.ok) throw new Error(response.statusText);
       alert(
-        "Password reset link has been sent to your PESU email (the one with PESxUGxxxxyyy@pesu.pes.edu)",
+        "Password reset link has been sent to your PESU email (the one with PESxUGxxxxyyy@pesu.pes.edu)"
       );
     } catch (err) {
       alert(
-        "Something went wrong in logging in. Please contact the sys admin. The error is logged to the console.",
+        "Something went wrong in logging in. Please contact the sys admin. The error is logged to the console."
       );
       console.log(err);
     }

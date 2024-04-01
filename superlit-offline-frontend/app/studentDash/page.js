@@ -33,10 +33,19 @@ export default function sdashboard() {
     setShowModal(false);
   };
 
+    const currentHour = new Date().getHours();
+    var greeting;
+    if (currentHour < 12) {
+      greeting = "Good Morning";
+    } else if (currentHour < 18) {
+      greeting = "Good Afternoon";
+    } else {
+      greeting = "Good Evening";
+    }
   return (
     <div>
       <div className="text-4xl flex justify-center items-center m-12 lg:mb-24 ">
-        Hello Students Name!
+        Hello! {greeting}
       </div>
       <div className="wrapper"></div>
       <div className=" grid lg:grid-cols-3 md:grid-cols-2 gap-12 z-0">

@@ -11,14 +11,14 @@ let teacherRegex = new RegExp("EMP*");
 
 router.post("/signup", async (req, res) => {
   console.log(req.body);
-  const { type, name, email, password, teacherId, srn } = req.body;
+  const { type, name, email, password, srn } = req.body;
   let user;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   if (type == "teacher") {
     user = new Teacher({
       name,
-      teacherId,
+      teacherId: srn,
       email,
       password: hashedPassword,
       classes_created: [],
@@ -42,6 +42,7 @@ router.post("/signup", async (req, res) => {
     console.log("Registered:", savedUser);
     res.status(200).send({ success: true });
   } catch (error) {
+    console.log(error);
     return res.status(401).send("Invalid email or password");
   }
 });
@@ -62,7 +63,7 @@ router.post("/login", async (req, res) => {
           srn: getStudent.srn,
           name: getStudent.name,
         });
-        res.send({ success: true });
+        res.send(["student", getStudent]);
       } else {
         console.log("Wrong password");
         res.status(401).send({ success: false });
@@ -84,7 +85,7 @@ router.post("/login", async (req, res) => {
           email: getTeacher.email,
           name: getTeacher.name,
         });
-        res.send({ success: true });
+        res.send(["teacher", getTeacher]);
       } else {
         console.log("Wrong password");
         res.status(401).send({ success: false });
