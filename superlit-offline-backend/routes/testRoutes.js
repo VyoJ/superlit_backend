@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Test = require("../schemas/testSchema");
 const Question = require("../schemas/questionSchema");
+const Response = require("../schemas/responseSchema");
 
 router.get("/get_test_data/:test_id", async (req, res) => {
   try {
@@ -22,6 +23,16 @@ router.get("/get_all_tests/:class_id", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(404).send("Could not find any tests for given teacher");
+  }
+});
+
+router.get("/completed_tests/:student_id", async (req, res) => {
+  try {
+    let all_tests = await Response.find({ studentId: req.params.student_id });
+    console.log(all_tests);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("Could not find any tests for given student");
   }
 });
 

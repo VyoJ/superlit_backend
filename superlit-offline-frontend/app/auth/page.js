@@ -35,7 +35,7 @@ export default function Page({ children }) {
       if (data.success) {
         // if success is true, redirect to /test/0 (test with ID 0) (temporarily, would be /dashboard later)
         login(srnRef.current.value);
-        router.push("/test/0");
+        router.push("/test/660a66b02feebd4202d2cd40");
       } else {
         // else, show alert
         alert("Make sure your password is right");

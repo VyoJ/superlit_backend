@@ -1,1 +1,1 @@
-gcc "$1" -o /tmp/code.out
+gcc -o "$1" "$2"
