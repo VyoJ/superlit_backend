@@ -21,20 +21,23 @@ export default function Test({ params }) {
   const [vimMode, setVimMode] = useState(false);
 
   const router = useRouter();
-  const { user, login, logout } = useAuth();
+  let { user, login, logout } = useAuth();
+  user = "ungabunga"
   const [loading, setLoading] = useState(true);
   // stuff that should run only once on page load
   useEffect(() => {
-    if (!user) router.replace("/auth");
+    // if (!user) router.replace("/auth");
     const monaco = dynamic(
       import("monaco-editor").then((monaco) => {
         console.log("monaco loaded");
         console.log(monaco);
         loader.config({ monaco });
+        console.log("config loaded");
         setLoading(false);
+        console.log("loading set to false");
         return monaco;
       }),
-      { ssr: false }
+      { ssr: false },
     );
   }, []);
 
@@ -47,7 +50,7 @@ export default function Test({ params }) {
   // now we need to send this test_id to the server to fetch test details
   async function fetch_test_data() {
     try {
-      const res = await fetch("/api/backendi/get_test_data/" + test_id);
+      const res = await fetch("/api/backendi/test/get_test_data/" + test_id);
       const data = await res.json();
       console.log(data);
       setTestData(data);
@@ -57,7 +60,7 @@ export default function Test({ params }) {
       setEditorData(editorData);
     } catch (e) {
       alert(
-        "Something went wrong. Contact the sys admin. The error has been logged to the console"
+        "Something went wrong. Contact the sys admin. The error has been logged to the console",
       );
       console.log(e);
     }
@@ -144,7 +147,7 @@ export default function Test({ params }) {
           console.log("test case failed");
           const failed_case = response_json.test_case_failed;
           alert(
-            `Test case failed!\nInput:\n${failed_case.input}\n\n\nExpected output:\n${failed_case.expected_output}\n\n\nProduced output:\n${failed_case.produced_output}`
+            `Test case failed!\nInput:\n${failed_case.input}\n\n\nExpected output:\n${failed_case.expected_output}\n\n\nProduced output:\n${failed_case.produced_output}`,
           );
         }
       })
@@ -179,7 +182,7 @@ export default function Test({ params }) {
       router.replace("/auth");
     } catch (e) {
       alert(
-        "Something went wrong. Contact the sys admin. The error has been logged to the console"
+        "Something went wrong. Contact the sys admin. The error has been logged to the console",
       );
       console.log(e);
     }
@@ -208,11 +211,11 @@ export default function Test({ params }) {
   const handleVimModeClick = (nextChecked) => {
     if (nextChecked) {
       let answer = prompt(
-        "Vim Mode is an advance editing mode meant only for users who know Vim key bindings. If you don't know these key bindings, then the editor might appear to freeze and not respond to you, when in reality, it's in the Vim Mode. So do you really have what it takes to enable Vim Mode? Enter the Vim command to exit vim: "
+        "Vim Mode is an advance editing mode meant only for users who know Vim key bindings. If you don't know these key bindings, then the editor might appear to freeze and not respond to you, when in reality, it's in the Vim Mode. So do you really have what it takes to enable Vim Mode? Enter the Vim command to exit vim: ",
       );
       if (answer == ":q") {
         setVimMode(
-          initVimMode(editorRef.current, editor_vim_statusbar.current)
+          initVimMode(editorRef.current, editor_vim_statusbar.current),
         );
         alert("Welcome, Chad. Vim mode enabled");
       } else if (!answer) {
@@ -220,7 +223,7 @@ export default function Test({ params }) {
         alert("You were so close to greatness in life");
       } else {
         alert(
-          "Nope :( That's not the right answer. You sure you know what you're doing?"
+          "Nope :( That's not the right answer. You sure you know what you're doing?",
         );
       }
     } else {

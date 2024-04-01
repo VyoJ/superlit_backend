@@ -1,8 +1,11 @@
 "use client";
 import React, { useState } from 'react';
 
+
 const QuestionForm = () => {
-  const [teacher, setTeacher] = useState('');
+  const [teacherId, setteacherId] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [questions, setQuestions] = useState([]);
 
   const addQuestion = () => {
@@ -25,43 +28,74 @@ const QuestionForm = () => {
     setQuestions(updatedQuestions);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const output = {
-      _id: 1,
-      class_id: 1,
-      teacher,
+      classId: 1,
+      teacherId: Number(teacherId),
+      startDate,
+      endDate,
       questions: questions.map((q, index) => ({
         question_id: index,
         ...q,
       })),
     };
     let jsonString = JSON.stringify(output, null, 2);
+    console.log(jsonString);
 
-
-    const blob = new Blob([jsonString], { type: 'application/json' });
-
-    // Create an anchor element and trigger a download
-    const a = document.createElement('a');
-    a.download = 'output.json'; // Name of the downloaded file
-    a.href = window.URL.createObjectURL(blob);
-    const clickEvt = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true,
+    let response = await fetch("/api/backendi/test/create_test", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonString
     });
-    a.dispatchEvent(clickEvt);
-    a.remove();
+
+    response = await response.json();
+
+    alert(`Here's your test ID: ${response._id}`);
+
+
+
+
+    // The below code downloads the JSON generated to the client' laptop
+    // const blob = new Blob([jsonString], { type: 'application/json' });
+    //
+    // // Create an anchor element and trigger a download
+    // const a = document.createElement('a');
+    // a.download = 'output.json'; // Name of the downloaded file
+    // a.href = window.URL.createObjectURL(blob);
+    // const clickEvt = new MouseEvent('click', {
+    //   view: window,
+    //   bubbles: true,
+    //   cancelable: true,
+    // });
+    // a.dispatchEvent(clickEvt);
+    // a.remove();
   };
 
   return (
-    <div class="bg-black min-h-screen">
+    <div className="bg-black min-h-screen">
       <form onSubmit={handleSubmit} className="flex flex-col items-center mx-10">
         <input
-          type="text"
-          placeholder="Teacher Name"
-          value={teacher}
-          onChange={(e) => setTeacher(e.target.value)}
+          type="number"
+          placeholder="EMP ID"
+          value={teacherId}
+          onChange={(e) => setteacherId(e.target.value)}
+          className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3 w-full"
+        />
+        <input
+          type="datetime-local"
+          placeholder="Start Time"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3 w-full"
+        />
+        <input
+          type="datetime-local"
+          placeholder="Start Time"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
           className="bg-[#252526] text-white p-3 outline-none border-b-white border-b-2 rounded-t-lg m-3 w-full"
         />
         {questions.map((q, questionIndex) => (

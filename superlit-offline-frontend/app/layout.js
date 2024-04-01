@@ -11,7 +11,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <AuthProvider>
+
         <body className="{inter.className} overflow-x-hidden">{children}</body>
+
       </AuthProvider>
     </html>
   );

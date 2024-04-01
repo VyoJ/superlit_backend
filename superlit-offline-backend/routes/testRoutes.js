@@ -26,10 +26,43 @@ router.get("/get_all_tests/:class_id", async (req, res) => {
   }
 });
 
+// router.get("/completed_tests/:student_id", async (req, res) => {
+//   try {
+//     let all_tests = await Response.find({ studentId: req.params.student_id });
+//     console.log(all_tests);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(404).send("Could not find any tests for given student");
+//   }
+// });
 router.get("/completed_tests/:student_id", async (req, res) => {
   try {
-    let all_tests = await Response.find({ studentId: req.params.student_id });
-    console.log(all_tests);
+    // Fetch all responses for the given student
+    let all_responses = await Response.find({ studentId: req.params.student_id });
+
+    // Group responses by testId and calculate total score for each test
+    let testScores = {};
+    all_responses.forEach(response => {
+      if (!testScores[response.testId]) {
+        testScores[response.testId] = 0;
+      }
+      testScores[response.testId] += response.marks;
+    });
+
+    // Fetch test details and check if the test is completed
+    let completedTests = [];
+    for (let testId in testScores) {
+      let test = await Test.findById(testId);
+      let now = new Date();
+      if (test.startDate <= now && now <= test.endDate) {
+        completedTests.push({
+          testId: testId,
+          totalScore: testScores[testId]
+        });
+      }
+    }
+
+    res.json(completedTests);
   } catch (error) {
     console.log(error);
     res.status(404).send("Could not find any tests for given student");
