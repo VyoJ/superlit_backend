@@ -3,16 +3,28 @@ import "./style.css";
 import Modal from "react-modal";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "@/components/AuthContext";
 export default function sdashboard() {
-  var dashboardOptions = [
-    ["Classroom1", "2", "0", "15/15"],
-    ["Classroom2", "5", "1", "15/15"],
-  ]; // ["classroom_name", "no of completed assignments", "no of due assignments", "score"]
+  // var dashboardOptions = [
+  //   ["Classroom1", "2", "0", "15/15"],
+  //   ["Classroom2", "5", "1", "15/15"],
+  // ]; // ["classroom_name", "no of completed assignments", "no of due assignments", "score"]
+  let [dashboardOptions, setdashBoardOptions] = useState([]);
+  let { user, login, logout } = useAuth();
+
   const [showModal, setShowModal] = useState(false);
   const [code, setRandomCode] = useState("");
   const modalRef = useRef();
 
-  useEffect(() => {
+  useEffect(async () => {
+    // TODO: add an if(user not defined) , go to auth stuff here.
+
+    // nice backend fetch
+    const response = await fetch("/api/backendi/class/get_student_class" + user);
+    setdashBoardOptions(await response.json());
+
+
+    // frontend modal bull, god knows how it works
     function handleClickOutside(event) {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         setShowModal(false);
@@ -20,9 +32,13 @@ export default function sdashboard() {
     }
 
     document.addEventListener("mousedown", handleClickOutside);
+
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+
+
   }, []);
 
   const handleOpenModal = () => {
@@ -33,15 +49,15 @@ export default function sdashboard() {
     setShowModal(false);
   };
 
-    const currentHour = new Date().getHours();
-    var greeting;
-    if (currentHour < 12) {
-      greeting = "Good Morning";
-    } else if (currentHour < 18) {
-      greeting = "Good Afternoon";
-    } else {
-      greeting = "Good Evening";
-    }
+  const currentHour = new Date().getHours();
+  var greeting;
+  if (currentHour < 12) {
+    greeting = "Good Morning";
+  } else if (currentHour < 18) {
+    greeting = "Good Afternoon";
+  } else {
+    greeting = "Good Evening";
+  }
   return (
     <div>
       <div className="text-4xl flex justify-center items-center m-12 lg:mb-24 ">

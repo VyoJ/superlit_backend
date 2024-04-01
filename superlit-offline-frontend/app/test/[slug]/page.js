@@ -22,10 +22,11 @@ export default function Test({ params }) {
 
   const router = useRouter();
   let { user, login, logout } = useAuth();
+  user = "ungabunga"; // TEMP!
   const [loading, setLoading] = useState(true);
   // stuff that should run only once on page load
   useEffect(() => {
-    if (!user) router.replace("/auth");
+    // if (!user) router.replace("/auth");
     const monaco = dynamic(
       import("monaco-editor").then((monaco) => {
         console.log("monaco loaded");
@@ -156,6 +157,14 @@ export default function Test({ params }) {
   }
 
   function saveEditorData(value, event) {
+    let length_diff = value.length - editorData[questionNumber].length;
+    console.log({ length_diff, eData: editorData[questionNumber], value, editi: editorRef.current.value });
+    if (length_diff > 150) {
+      alert("You can't copy and paste large blocks of code. This is viewed as plagiarism. This incident has been reported");
+      editorRef.current.setValue(editorData[questionNumber]);
+      return;
+    }
+
     setEditorData((editorData) => {
       editorData[questionNumber] = value;
       return editorData;
@@ -165,7 +174,7 @@ export default function Test({ params }) {
   async function end_button_clicked() {
 
     let confirmation = confirm("Are you sure you want to end the test?");
-    if(!confirmation) return;
+    if (!confirmation) return;
 
     let post_request_data = {
       test_id: test_id,
