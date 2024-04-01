@@ -13,14 +13,15 @@ export default function sdashboard() {
   let { user, login, logout } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
-  const [code, setRandomCode] = useState("");
+  const [code, setCode] = useState("");
+
   const modalRef = useRef();
 
   useEffect(async () => {
     // TODO: add an if(user not defined) , go to auth stuff here.
 
     // nice backend fetch
-    const response = await fetch("/api/backendi/class/get_student_class" + user);
+    const response = await fetch("/api/backendi/class/get_student_class/" + user);
     setdashBoardOptions(await response.json());
 
 
@@ -48,6 +49,29 @@ export default function sdashboard() {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+  const handleSubmitModal = async () => {
+    let body = {
+      class_id: code,
+      student_id: user["_id"],
+    }
+
+
+    const res = await fetch("/api/backendi/class/add_to_class", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+    );
+
+    if (!res.ok) {
+      alert(await res.text());
+    } else {
+      alert("You've been added to the classroom");
+    }
+  }
 
   const currentHour = new Date().getHours();
   var greeting;
@@ -105,11 +129,11 @@ export default function sdashboard() {
             <input
               type="text"
               value={code}
-              onChange={(e) => setRandomCode(e.target.value)}
+              onChange={(e) => setCode(e.target.value)}
             />
           </label>
-          <button className="m-6" onClick={handleCloseModal}>
-            Close
+          <button className="m-6" onClick={handleSubmitModal}>
+            Submit
           </button>
         </div>
       </Modal>
