@@ -16,9 +16,11 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "bufferutil": "^4.0.8",
+    "clsx": "^2.1.0",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
     "format": "^0.2.2",
+    "framer-motion": "^11.0.24",
     "monaco-editor": "^0.45.0",
     "monaco-vim": "^0.4.1",
     "next": "13.4.3",
@@ -26,9 +28,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-modal": "^3.16.1",
-
     "react-switch": "^7.0.0",
-
+    "tailwind-merge": "^2.2.2",
     "tailwind-scrollbar-hide": "^1.1.7",
     "tailwindcss": "3.3.2"
   },

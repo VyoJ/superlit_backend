@@ -34,7 +34,7 @@ export default function Page({ children }) {
       console.log(data);
       if (data.length) {
         // if success is true, redirect to /test/0 (test with ID 0) (temporarily, would be /dashboard later)
-        login(data);
+        login(data[1]);
         if (data[0] === "teacher") {
           router.push("/teacherDash");
         } else if (data[0] === "student") {

@@ -1,7 +1,7 @@
-"use client"
-import React, { useState, useRef, useEffect } from 'react';
-import Modal from 'react-modal';
-import './style.css';
+"use client";
+import React, { useState, useRef, useEffect } from "react";
+import Modal from "react-modal";
+import "./style.css";
 import { useAuth } from "@/components/AuthContext";
 
 export default function ViewClassroom() {
@@ -13,21 +13,25 @@ export default function ViewClassroom() {
 
   const modalRef = useRef();
 
-  useEffect(async () => {
-
+  useEffect(() => {
     // fetching data
     //
 
     // TODO: add an if(user not defined) , go to auth stuff here.
 
     // nice backend fetch
-    const response = await fetch("/api/backendi/class/get_teacher_class/" + user);
-    setClassArray(await response.json());
-
-
-
-
-
+    async function getClassData() {
+      try {
+        const response = await fetch(
+          "/api/backendi/class/get_teacher_class/" + user.teacherId
+        );
+        setClassArray(await response.json());
+      } catch (error) {
+        console.log(error);
+        if (response.status === 404) console.log("No classes for this teacher");
+      }
+    }
+    getClassData();
     // some modal bull
     function handleClickOutside(event) {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -35,9 +39,9 @@ export default function ViewClassroom() {
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -45,8 +49,8 @@ export default function ViewClassroom() {
     alert("ungabunga");
     event.preventDefault();
     const body = {
-      teacherId: user
-    }
+      teacherId: user,
+    };
     const result = await fetch("/api/backendi/class/create_class", {
       method: "POST",
       headers: {
@@ -58,7 +62,7 @@ export default function ViewClassroom() {
     if (!result.ok) {
       alert(await result.text());
     } else {
-      alert("Your Code Is: " + await res.text());
+      alert("Your Code Is: " + (await res.text()));
     }
 
     setShowModal(false); // Close the modal after submission
@@ -67,7 +71,9 @@ export default function ViewClassroom() {
   return (
     <div>
       <div className="container">
-        <div className="lg:text-6xl md:text-4xl text-3xl m-12">Your Classrooms</div>
+        <div className="lg:text-6xl md:text-4xl text-3xl m-12">
+          Your Classrooms
+        </div>
         <div className=" grid lg:grid-cols-3 md:grid-cols-2 gap-12 z-0">
           {classArray.map((classItem, index) => (
             <div key={index}>
@@ -78,13 +84,17 @@ export default function ViewClassroom() {
                 <div className="text-2xl m-3">{classItem[1]}</div>
                 <div>Assigned On: {classItem[2]}</div>
                 <div>Due on: {classItem[3]}</div>
-                <div>Code: {classItem[4]}</div> {/*need to disply the random gen code here */}
+                <div>Code: {classItem[4]}</div>{" "}
+                {/*need to disply the random gen code here */}
                 <div className="shadow"></div>
                 <div className="backdrop"></div>
               </div>
             </div>
           ))}
-          <div className="addClassroom" onClick={() => setShowModal((prevShowModal) => !prevShowModal)}>
+          <div
+            className="addClassroom"
+            onClick={() => setShowModal((prevShowModal) => !prevShowModal)}
+          >
             <div className="card">
               <div className="border"></div>
               <div className="filter"></div>
@@ -95,32 +105,38 @@ export default function ViewClassroom() {
           </div>
         </div>
       </div>
-      <Modal isOpen={showModal} ariaHideApp={false} className="bg-background grid lg:m-24 justify-items-center overflow-hidden " >
+      <Modal
+        isOpen={showModal}
+        ariaHideApp={false}
+        className="bg-background grid lg:m-24 justify-items-center overflow-hidden "
+      >
         <div ref={modalRef}>
-          <form onSubmit={handleSubmit} >
+          <form onSubmit={handleSubmit}>
             <label className="m-4  flex ">
               Class Name:
               <input
                 type="text"
                 value={classsName}
-                onChange={e => setclasssName(e.target.value)}
+                onChange={(e) => setclasssName(e.target.value)}
               />
             </label>
-            <button type="submit" onClick={handleSubmit} className="m-6 ">Submit</button>
+            <button type="submit" onClick={handleSubmit} className="m-6 ">
+              Submit
+            </button>
           </form>
         </div>
       </Modal>
       <div className="circle one"></div>
       <div className="circle two"></div>
       <svg>
-        <filter id='noiseFilter'>
+        <filter id="noiseFilter">
           <feTurbulence
-            type='fractalNoise'
-            baseFrequency='0.6'
-            stitchTiles='stitch' />
+            type="fractalNoise"
+            baseFrequency="0.6"
+            stitchTiles="stitch"
+          />
         </filter>
       </svg>
     </div>
   );
 }
-
